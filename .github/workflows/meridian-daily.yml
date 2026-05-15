@@ -1,0 +1,28 @@
+name: 🤖 Meridian Daily Intel
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  intel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests beautifulsoup4
+      - name: Run Meridian
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/meridian_intel.py
+      - name: Save Report
+        run: |
+          git config user.name "Meridian"
+          git config user.email "meridian@aisckop.co.uk"
+          git add reports/
+          git diff --cached --quiet || git commit -m "📊 $(date +%Y-%m-%d)"
+          git push
