@@ -1,0 +1,26 @@
+name: 📧 Meridian Inbox Monitor
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  inbox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Check All Inboxes
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          AI_EMAIL_PASS: ${{ secrets.AI_EMAIL_PASS }}
+          HELLO_EMAIL_PASS: ${{ secrets.HELLO_EMAIL_PASS }}
+          GOV_EMAIL_PASS: ${{ secrets.GOV_EMAIL_PASS }}
+          INVESTORS_EMAIL_PASS: ${{ secrets.INVESTORS_EMAIL_PASS }}
+          GRANTS_EMAIL_PASS: ${{ secrets.GRANTS_EMAIL_PASS }}
+        run: python scripts/inbox_monitor.py
