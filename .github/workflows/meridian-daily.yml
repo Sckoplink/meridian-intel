@@ -8,6 +8,8 @@ on:
 jobs:
   intel:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,4 +27,4 @@ jobs:
           git config user.email "meridian@aisckop.co.uk"
           git add reports/
           git diff --cached --quiet || git commit -m "📊 $(date +%Y-%m-%d)"
-          git push
+          git push https://${{ github.actor }}:${{ github.token }}@github.com/${{ github.repository }}.git
